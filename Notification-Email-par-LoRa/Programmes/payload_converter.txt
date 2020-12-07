@@ -1,0 +1,10 @@
+function Converter(decoded, port) {
+
+var converted = decoded;
+converted.trigger = false;
+
+if (port == 3) {
+converted.trigger = true;
+}
+return converted;
+}
