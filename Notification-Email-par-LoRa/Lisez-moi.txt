@@ -5,17 +5,27 @@ Le projet est un système d’alarme qui envoie un avertissement par e-mail via le 
 Matériel Nécéssaire
 -The Things Gateway
 -The Things Node 
--Arduino
+-Logiciel Arduino
 
-*IMPORTANT* : Pour ceux voulant utiliser le hardware TheThingsGateway il peut seulement être enregistré par un utilisateur à la fois. Il faut garder vos identifiants et libérer le matériel à la fin du projet ou rendre votre compte accessible pour les prochains qui voudront utiliser le matériel. Il est possible de faire un transfert de propriété à partir du compte ayant fait l’enregistrement vers un autre utilisateur (en cliquant sur le matériel -> owner : transfer ownership) 
+*NOTE* : Le hardware peut seulement être enregistré par un utilisateur à la fois. Il est possible de faire un transfert de propriété à partir du compte ayant fait l’enregistrement vers un autre utilisateur (en cliquant sur le matériel -> owner : transfer ownership) 
 
 Mon identifiant : gmarcovitch
 Mot de passe : tgemaisonneuve2020
 
-ÉTAPES 
-1- Télécharger les librairies Arduino nécéssaires. La librairie du board SparkFun Pro Micro ira dans le fichier Arduino -> Hardware.  La librairie TheThingsNode va dans le fichier Arduino -> librairie. 
+CONTENU DU GITHUB 
+Librairies :
+	- SparkFun Micro : board à ajouter pour programmer via Arduino
+	- TheThingsNode: librairie du Node
+Programmes :
+	- Device Info : programme pour enregistrer le matériel sur TheThingsNetwork
+	- Basic : programme pour envoyer des données au gateway
+	- payload_converter et payload_decoder : fonction à implémenter sur la plateforme.
 
-2 -Se créer un compte sur https://www.thethingsnetwork.org
+
+ÉTAPES DE RÉALISATION
+1- Télécharger les librairies Arduino. La librairie du board SparkFun Pro Micro va dans le fichier Arduino -> Hardware.  La librairie TheThingsNode va dans le fichier Arduino -> librairie. 
+
+2 -Créer un compte sur https://www.thethingsnetwork.org
 
 3- Suivre la procédure d’activation du gateway détaillée dans le vidéo.  Il faut l’enregistrer via leur site web pouvoir l’utiliser dans la section console du site.
 note : le lien web d’activation a changé : https://activate.thethingsnetwork.org
@@ -33,7 +43,7 @@ https://youtu.be/tapK6EINx1k
 Lorsqu’il y a un évènement du type mouvement détecté par le capteur. 
 ( Console -> Applications -> Votre Application –> Payload Format -> Converter)
 
-6 – Se créer un compte sur le site IFTT et relier la console au site pour recevoir une notification e-mail lorsqu’il y a un trigger. Suivre la procédure du vidéo pour comprendre comment faire pour rajouter l’implémentation sur la console.
+6 – Créer un compte sur le site IFTTT et relier la console TheThingsNetwork au site pour recevoir une notification e-mail lorsqu’il y a un "trigger". Suivre la procédure du vidéo pour comprendre comment faire pour rajouter l’implémentation sur la console.
 note : sur IFTTT la plateforme  "Maker" s’appelle maintenant "Webhooks"
 https://ifttt.com/home
 https://www.youtube.com/watch?v=BNyB_A1o2xc
