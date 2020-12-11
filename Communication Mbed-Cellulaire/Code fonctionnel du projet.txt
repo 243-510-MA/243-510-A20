@@ -1,0 +1,47 @@
+#include "mbed.h"
+Serial pc(USBTX, USBRX);
+Serial device(p9, p10); // p9: RX et p10: TX
+ 
+DigitalOut led1(p30); //On board LED blue
+DigitalOut led2(p29); //On board LED red
+
+unsigned char recivedchar;
+ 
+int main()
+{
+    unsigned char rx;
+    device.baud(9600);
+    while(1) {
+        if(device.readable()) {
+            rx =device.getc();          // Reception du message dans la variable rx
+            switch (rx) {
+                case 0x31 :             // Charactère 1 en ASCII
+                    led1 = 1;
+                    device.putc(rx);    // Transmet l'état de la DEL à l'application
+                    break;
+                case 0x32 :             // Charactère 2 en ASCII
+                    led1 = 0;
+                    device.putc(rx);
+                    break;
+                case 0x33 :             // Charactère 3 en ASCII
+                    led2 = 1;
+                    device.putc(rx);
+                    break;
+                case 0x34 :             // Charactère 4 en ASCII 
+                    led2 = 0;
+                    device.putc(rx);
+                    break;
+                case 0x35 :             // Charactère 5 en ASCII
+                    led1 = 1;
+                    led2 = 1;           // Allume toutes les DELs
+                    device.putc(rx);
+                    break;
+                case 0x36 :             // Charactère 6 en ASCII
+                    led1 = 0;
+                    led2 = 0;           // Eteint toutes les DELs 
+                    device.putc(rx);
+                    break;
+            }
+        }
+    }
+}
