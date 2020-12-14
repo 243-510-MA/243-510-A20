@@ -1,0 +1,105 @@
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include "BluetoothSerial.h"
+
+#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
+#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
+#endif
+
+BluetoothSerial SerialBT;
+
+const char* ssid     = "Boris";
+const char* password = "aumaxacapiRiBo6904$";
+
+int command = 1;
+
+WiFiServer server(80);
+
+void setup()
+{
+    Serial.begin(115200);
+    
+    SerialBT.begin("ESP32test");
+    Serial.println("The device started, now you can pair it with bluetooth!");
+}
+
+long value = 0;
+int key = 0x31;                                                         //"1" en ascii
+
+void loop(){
+
+    if (command == 1){
+        if (Serial.available()) {
+            SerialBT.write(Serial.read());
+          }
+        if (SerialBT.available()) {
+            Serial.write(SerialBT.read());
+          }
+        delay(20);
+        if (SerialBT.read() == key){
+            //SerialBT.disconnect();
+            SerialBT.disconnect();
+            command = 0;
+        }
+    }
+    if (command == 0){
+
+        Serial.print("Connecting to ");
+        Serial.println(ssid);
+    
+        WiFi.begin(ssid, password);
+    
+        while (WiFi.status() != WL_CONNECTED) {
+            delay(500);
+            Serial.print("Connecting...");
+        }
+        
+        Serial.println("");
+        Serial.println("WiFi connected.");
+        Serial.println("IP address: ");
+        Serial.println(WiFi.localIP());
+        
+        server.begin();
+      
+        if ((WiFi.status() == WL_CONNECTED)) {                          //Check the current connection status
+            
+            Serial.println("searching for information...");
+                   
+            HTTPClient http;
+       
+            http.begin("https://meteo.gc.ca/canada_f.html");            //Specify the URL
+            int httpCode = http.GET();                                  //Make the request for the source code
+       
+            if (httpCode > 0) {                                         //Check for the returning code
+      
+                String payload = http.getString();                      //String "payload" est = au code source recu du site
+                String temp;
+                Serial.println(httpCode);                               //ecrit le code html
+                
+                //Serial.println(payload);                              //ecrit dans la console serie le code source de la page web (pour des fins de débogage si besoin, enlever les barres obliques en début de ligne)
+              
+                if (payload.indexOf("Montréal") >= 0){                  //cherche "Montréal" dans le html
+                    value = payload.indexOf("Montréal");                //donne à "value" la position de "Montréal" dans le html
+                }
+                else{
+                    Serial.println("not found");
+                }
+                Serial.println("Température actuelle à Montréal :");
+                temp = payload.substring(value+53, value+55);           //value+53 est le début du chiffre que l'on cherche, +55 est la fin 
+                Serial.println(temp);                                   //écrit la température actuelle de Montréal
+            }
+            else {
+                Serial.println("WiFi not connected");
+            }
+            http.end();                                                 //Free the resources
+            WiFi.disconnect();
+        }
+        command = 2;
+    }
+    else{
+        if (Serial.read() == key){
+            command = 1;
+        }
+    }
+    delay(20);
+}
